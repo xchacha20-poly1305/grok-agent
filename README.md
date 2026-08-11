@@ -21,7 +21,7 @@ The main agent should design and plan; use Grok to investigate the tree or execu
 ## Usage
 
 ```shell
-claude plugin marketplace add xchacha20-poly1305/agent-plugins
+claude plugin marketplace add https://github.com/xchacha20-poly1305/agent-plugins.git
 claude plugin install grok-agent@anrong-plugins
 claude "/grok-agent:setup-grok"
 ```
