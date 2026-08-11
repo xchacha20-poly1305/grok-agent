@@ -2,7 +2,7 @@
   "name": "grok-agent",
   "displayName": "Grok Agent",
   "description": "Delegate codebase exploration or implementing an existing plan to Grok Build via headless grok -p (no MCP)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "xchacha20-poly1305"
   },

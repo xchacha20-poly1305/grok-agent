@@ -22,49 +22,88 @@ Always use:
 | Flag | Reason |
 |------|--------|
 | `--always-approve` | Unattended tool approval |
-| `--output-format json` | Parse `text` + `sessionId` |
+| `--output-format json` | Machine-readable result with `text` + `sessionId` |
 
 Do **not** pass `--sandbox` (full access). Do **not** add model/tools/rules/other flags unless the user explicitly requested them.
 
 Use a large Bash timeout (at least **3600000** ms) for real tasks.
 
+## Handle JSON output (required)
+
+`--output-format json` prints one object after completion. It can be **very large** (`text`, optional `thought`, `usage` / cost fields, pretty-printed). Treat it as a dump, not something to load into the agent context.
+
+**Rules:**
+
+1. **Always** redirect stdout to a file. Never leave the full JSON in the shell tool result; never `cat` / Read the whole dump.
+2. Use **`jq`** against that file for only the fields you need.
+3. Put the response body in its own file when you need it (`jq -r '.text'`).
+
+```bash
+OUT="$(mktemp "${TMPDIR:-/tmp}/grok-out.XXXXXX")"
+TEXT="$(mktemp "${TMPDIR:-/tmp}/grok-text.XXXXXX")"
+
+grok -p '...' --always-approve --output-format json >"$OUT"
+status=$?
+
+# errors: {"type":"error","message":"..."} (exit non-zero)
+if [[ $status -ne 0 ]] || jq -e '.type == "error"' "$OUT" >/dev/null 2>&1; then
+  jq -r '.message // .' "$OUT" >&2
+  exit "${status:-1}"
+fi
+
+SESSION_ID=$(jq -r '.sessionId' "$OUT")
+STOP=$(jq -r '.stopReason // empty' "$OUT")
+jq -r '.text' "$OUT" >"$TEXT"
+
+# Use SESSION_ID for --resume; read "$TEXT" (not "$OUT") for the reply body.
+echo "sessionId=$SESSION_ID stopReason=$STOP text=$TEXT"
+```
+Useful `jq` extractions (run against the file path, do not pipe the whole dump through the agent):
+
+| Need | Command |
+|------|---------|
+| Resume id | `jq -r '.sessionId' "$OUT"` |
+| Stop reason | `jq -r '.stopReason' "$OUT"` (`end_turn`, `max_tokens`, …) |
+| Reply body | `jq -r '.text' "$OUT" >"$TEXT"` then Read `"$TEXT"` if needed |
+| Error | `jq -r 'select(.type=="error") \| .message' "$OUT"` |
+
+Success shape (fields may include more; do not depend on loading them all):
+
+```json
+{
+  "text": "...",
+  "stopReason": "end_turn",
+  "sessionId": "...",
+  "requestId": "..."
+}
+```
+
 ## New session
 
 ```bash
-grok -p '<prompt>' --always-approve --output-format json
+grok -p '<prompt>' --always-approve --output-format json >"$OUT"
 ```
 
 For multi-line prompts or special characters, write the prompt **verbatim** to a file and use:
 
 ```bash
-grok --prompt-file /path/to/prompt.txt --always-approve --output-format json
+grok --prompt-file /path/to/prompt.txt --always-approve --output-format json >"$OUT"
 ```
 
-Successful JSON includes:
-
-- `text` — Grok's final response (show this to the user / use as the result)
-- `sessionId` — **keep this**; required for every follow-up
-
-Example parse:
-
-```bash
-RESULT=$(grok -p '...' --always-approve --output-format json)
-echo "$RESULT" | jq -r '.text'
-echo "$RESULT" | jq -r '.sessionId'
-```
+Then extract with `jq` as above. Keep `sessionId` for every follow-up.
 
 ## Continue a session (no separate reply tool)
 
 There is **no** separate reply API. To continue, pass the previous `sessionId`:
 
 ```bash
-grok -p '<continued prompt>' --resume '<sessionId>' --always-approve --output-format json
+grok -p '<continued prompt>' --resume '<sessionId>' --always-approve --output-format json >"$OUT"
 ```
 
 Or with a prompt file:
 
 ```bash
-grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve --output-format json
+grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve --output-format json >"$OUT"
 ```
 
 * Omitting `--resume` starts a **new** session and drops prior context.
@@ -74,6 +113,7 @@ grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve -
 
 * **MUST NOT** modify the prompt: no expanding, refining, or adding requirements. Transparent forward only.
 * **MUST** use `--output-format json` so `sessionId` is available.
+* **MUST** redirect that JSON to a file and use `jq` for keys; **MUST NOT** Read/cat the full dump.
 * **MUST** use `--always-approve`.
 * **MUST** preserve and reuse `sessionId` for continuations.
 * Grok already loads `CLAUDE.md` / `AGENTS.md` (and related project rules). Do not paste those files into the prompt; do not restate content Grok will read itself.
@@ -82,4 +122,4 @@ grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve -
 
 ## Errors
 
-Non-zero exit or JSON `{"type":"error","message":"..."}`: surface the full error. Do not silently retry.
+Non-zero exit or JSON `{"type":"error","message":"..."}`: surface `message` via `jq`. Do not silently retry. Do not dump the entire error file into context if only `message` is needed.
