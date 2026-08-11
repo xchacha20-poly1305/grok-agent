@@ -36,10 +36,7 @@ claude plugin install grok-agent@anrong-plugins
 
 ## How it works
 
-| Path | What to use |
-|------|-------------|
-| Background sub-agent | Agent `grok` (Bash → `grok -p`) |
-| Foreground / manual | Skill `grok-use` |
+The main agent calls `grok -p` directly via the `grok-use` skill — no intermediate sub-agent. Use `run_in_background` for long-running tasks.
 
 ### New session
 

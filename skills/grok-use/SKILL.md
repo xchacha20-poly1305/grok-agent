@@ -1,19 +1,36 @@
 ---
 name: grok-use
 description: |-
-    Call Grok Build via headless `grok -p` for codebase exploration or
-    implementing an already-written plan (not open-ended design)
-user-invocable: false
+    Delegate codebase exploration or implementing an already-written plan to
+    Grok Build via headless `grok -p`. Use this instead of doing the work
+    yourself when the task is exploration or plan execution.
+
+    In scope:
+    - Explore / map code: locate files, trace call paths, summarize modules,
+      answer "how does X work?" with repo evidence
+    - Implement an existing plan: execute a design doc, PR plan, checklist, or
+      step list that already exists — do not invent architecture
+
+    Out of scope (do these yourself, not via Grok):
+    - Open-ended design, product decisions, or writing the plan itself
+    - Ambiguous tasks with no plan and no clear exploration question
+    - Pure conversation, review-only opinions, or broad "fix everything"
+      without a concrete plan
+
+    Grok natively reads CLAUDE.md and AGENTS.md — do not paste project rules
+    into the prompt. For implementation, pass the plan (or its path) and
+    constraints; let Grok execute rather than micro-stepping.
+
+    There is no MCP and no separate reply tool. Continuations require the
+    session ID from the previous run (`--resume <sessionId>`).
+user-invocable: true
 ---
 
-Use Grok only for these two jobs:
-
-1. **Explore code** — map the repo, find symbols/files, trace flows, report how something works
-2. **Implement an existing plan** — execute a design/PR plan/checklist that already exists; do not invent the plan
+Load this skill when you want Grok to do codebase exploration or execute an existing plan. **You call `grok` directly via Bash — there is no intermediate agent.**
 
 Do **not** delegate open-ended design, product choices, or "figure out what to build" to Grok. Write or refine the plan yourself first, then hand Grok the plan (or path to it) plus any constraints.
 
-Grok does **not** provide MCP tools for this integration. Call the `grok` CLI with Bash.
+Grok does **not** provide MCP tools. Call the `grok` CLI with Bash.
 
 ## Fixed flags
 
@@ -26,7 +43,7 @@ Always use:
 
 Do **not** pass `--sandbox` (full access). Do **not** add model/tools/rules/other flags unless the user explicitly requested them.
 
-Use a large Bash timeout (at least **3600000** ms) for real tasks.
+Use a large Bash timeout (at least **3600000** ms) for real tasks. For tasks that will take a while, prefer `run_in_background: true` so you stay unblocked — you will be notified when the command finishes.
 
 ## Handle JSON output (required)
 
