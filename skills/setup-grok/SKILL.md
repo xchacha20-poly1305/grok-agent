@@ -34,11 +34,7 @@ If this fails (auth, network, binary error), stop and notify the user. Common fi
 - `grok login` (browser or device code)
 - or set `XAI_API_KEY` for headless auth
 
-## 3. Project docs
-
-No Codex-style config is required. Grok natively loads project rules such as `CLAUDE.md` and `AGENTS.md`. You do **not** need `project_doc_fallback_filenames` or edits under `~/.codex/`.
-
-## 4. Done
+## 3. Done
 
 Tell the user the plugin is ready. Delegate only:
 
