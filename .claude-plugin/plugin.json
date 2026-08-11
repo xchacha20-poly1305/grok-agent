@@ -1,10 +1,10 @@
 {
-  "name": "my-codex-plugin",
-  "displayName": "Codex Plugin",
-  "description": "A plugin that uses OpenAI Codex as an agent",
-  "version": "1.0.5",
+  "name": "grok-agent",
+  "displayName": "Grok Agent",
+  "description": "Delegate codebase exploration or implementing an existing plan to Grok Build via headless grok -p (no MCP)",
+  "version": "1.0.0",
   "author": {
-    "name": "nekohasekai"
+    "name": "xchacha20-poly1305"
   },
-  "repository": "https://github.com/nekohasekai/my-codex-plugin"
+  "repository": "https://github.com/xchacha20-poly1305/grok-agent"
 }
