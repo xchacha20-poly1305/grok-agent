@@ -1,6 +1,6 @@
 # grok-agent
 
-Claude Code plugin that delegates **codebase exploration** and **implementing an already-written plan** to [Grok Build](https://github.com/xai-org/grok-build) via headless `grok -p`.
+Claude Code plugin that delegates **codebase exploration**, **implementing an already-written plan**, and **real-time search** (current events, X/Twitter, web) to [Grok Build](https://github.com/xai-org/grok-build) via headless `grok -p`.
 
 This plugin does **not** use MCP. Continuations require a `sessionId` and `grok -p --resume <sessionId>`.
 
@@ -10,8 +10,9 @@ This plugin does **not** use MCP. Continuations require a `sessionId` and `grok 
 |----------|----------------|
 | Explore / map the codebase | Open-ended design or writing the plan |
 | Implement an existing design/PR plan/checklist | Ambiguous "build something" without a plan |
+| Real-time search (events, X/Twitter, web) | Pure conversation or review-only opinions |
 
-The main agent should design and plan; use Grok to investigate the tree or execute a plan that already exists.
+The main agent should design and plan; use Grok to investigate the tree, execute a plan that already exists, or search for real-time information when your own results are insufficient.
 
 ## Prerequisites
 

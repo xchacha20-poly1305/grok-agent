@@ -1,15 +1,17 @@
 ---
 name: grok-use
 description: |-
-    Delegate codebase exploration or implementing an already-written plan to
-    Grok Build via headless `grok -p`. Use this instead of doing the work
-    yourself when the task is exploration or plan execution.
+    Delegate to Grok Build via headless `grok -p`. Use this instead of
+    doing the work yourself when the task fits Grok's strengths.
 
     In scope:
     - Explore / map code: locate files, trace call paths, summarize modules,
       answer "how does X work?" with repo evidence
     - Implement an existing plan: execute a design doc, PR plan, checklist, or
       step list that already exists — do not invent architecture
+    - Real-time search: current events, X/Twitter discourse, trending topics,
+      or any query where your own search returns little or stale results —
+      Grok has live access to X and the web
 
     Out of scope (do these yourself, not via Grok):
     - Open-ended design, product decisions, or writing the plan itself
@@ -26,7 +28,7 @@ description: |-
 user-invocable: true
 ---
 
-Load this skill when you want Grok to do codebase exploration or execute an existing plan. **You call `grok` directly via Bash — there is no intermediate agent.**
+Load this skill when you want Grok to do codebase exploration, execute an existing plan, or run a real-time search (current events, X/Twitter, anything your own search can't cover). **You call `grok` directly via Bash — there is no intermediate agent.**
 
 Do **not** delegate open-ended design, product choices, or "figure out what to build" to Grok. Write or refine the plan yourself first, then hand Grok the plan (or path to it) plus any constraints.
 
