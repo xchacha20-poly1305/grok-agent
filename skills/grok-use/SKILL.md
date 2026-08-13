@@ -1,33 +1,18 @@
 ---
 name: grok-use
 description: |-
-    Delegate to Grok Build via headless `grok -p`. Use this instead of
-    doing the work yourself when the task fits Grok's strengths.
-    Grok is much cheaper and faster than you — save the user money and time by proactively
-    delegating here whenever the task fits the scope below!
-    Use it instead of other agents.
+    Delegate to Grok instead of doing the work yourself or using other agents.
+    Grok is cheaper and faster — proactively delegate when the task fits.
 
     In scope:
-    - Explore / map code: locate files, trace call paths, summarize modules,
-      answer "how does X work?" with repo evidence
-    - Implement an existing plan: execute a design doc, PR plan, checklist, or
-      step list that already exists — do not invent architecture
-    - Real-time search: current events, X/Twitter discourse, trending topics,
-      or any query where your own search returns little or stale results —
-      Grok has live access to X and the web
+    - Explore / map code: locate files, trace call paths, summarize modules
+    - Implement an existing plan: execute a design doc, PR plan, or checklist
+    - Real-time search: current events, X/Twitter discourse, trending topics
 
-    Out of scope (do these yourself, not via Grok):
+    Out of scope (do these yourself):
     - Open-ended design, product decisions, or writing the plan itself
     - Ambiguous tasks with no plan and no clear exploration question
-    - Pure conversation, review-only opinions, or broad "fix everything"
-      without a concrete plan
-
-    Grok natively reads CLAUDE.md and AGENTS.md — do not paste project rules
-    into the prompt. For implementation, pass the plan (or its path) and
-    constraints; let Grok execute rather than micro-stepping.
-
-    There is no MCP and no separate reply tool. Continuations require the
-    session ID from the previous run (`--resume <sessionId>`).
+    - Pure conversation or broad "fix everything" without a concrete plan
 user-invocable: true
 ---
 
@@ -143,7 +128,7 @@ grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve -
   - **Resume:** "add a `/users` endpoint" then immediately "add input validation to that `/users` endpoint" → the second task directly extends the first and Grok's context already has the relevant code.
   - **New session:** "refactor the logger" then "update the README" → unrelated tasks, no shared context needed.
   - **New session:** "explore how auth middleware works" then "implement the caching plan" → different goals; carrying the exploration context into implementation adds noise.
-* Grok already loads `CLAUDE.md` / `AGENTS.md` (and related project rules). Do not paste those files into the prompt; do not restate content Grok will read itself.
+* Grok already loads `AGENTS.md`. Do not paste those files into the prompt; do not restate content Grok will read itself.
 * For implementation: include the plan content or absolute path in the prompt; prefer one clear task over micro-stepping without analysis.
 * For exploration: ask a concrete question (area, symbol, behavior) rather than an unbounded tour.
 
