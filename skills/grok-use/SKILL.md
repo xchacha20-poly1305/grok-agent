@@ -138,6 +138,11 @@ grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve -
 * **MUST** redirect that JSON to a file and use `jq` for keys; **MUST NOT** Read/cat the full dump.
 * **MUST** use `--always-approve`.
 * **MUST** preserve and reuse `sessionId` for continuations.
+* **Prefer new sessions.** Do not `--resume` unless (a) a task was interrupted and needs to continue, or (b) two tasks are strongly coupled and share essential context. Keep session context lean — stale context degrades Grok's output quality.
+  - **Resume:** "add error handling to the parser" → Grok hit max tokens mid-edit → resume to finish the same edit.
+  - **Resume:** "add a `/users` endpoint" then immediately "add input validation to that `/users` endpoint" → the second task directly extends the first and Grok's context already has the relevant code.
+  - **New session:** "refactor the logger" then "update the README" → unrelated tasks, no shared context needed.
+  - **New session:** "explore how auth middleware works" then "implement the caching plan" → different goals; carrying the exploration context into implementation adds noise.
 * Grok already loads `CLAUDE.md` / `AGENTS.md` (and related project rules). Do not paste those files into the prompt; do not restate content Grok will read itself.
 * For implementation: include the plan content or absolute path in the prompt; prefer one clear task over micro-stepping without analysis.
 * For exploration: ask a concrete question (area, symbol, behavior) rather than an unbounded tour.
