@@ -33,6 +33,14 @@ Always use:
 
 Do **not** pass `--sandbox` (full access). Do **not** add model/tools/rules/other flags unless the user explicitly requested them.
 
+## Optional flags
+
+| Flag | When to use |
+|------|-------------|
+| `--cwd <path>` | Target a different project directory. Only needed when the user is working across multiple projects simultaneously, or explicitly asks Grok to operate in another directory. Omit when working in the current project. |
+
+## Timeouts
+
 Use a large Bash timeout (at least **3600000** ms) for real tasks. For tasks that will take a while, prefer `run_in_background: true` so you stay unblocked — you will be notified when the command finishes.
 
 ## Handle JSON output (required)
