@@ -21,19 +21,37 @@ The main agent should design and plan; use Grok to investigate the tree, execute
 
 ## Usage
 
+### Install
+
+Add marketplace if not added.
+
 ```shell
 claude plugin marketplace add https://github.com/xchacha20-poly1305/agent-plugins.git
+```
+
+Then install.
+
+```
 claude plugin install grok-agent@anrong-plugins
 claude "/grok-agent:setup-grok"
 ```
 
-### Force Update
+### Update
+
+```shell
+claude plugin update grok-agent@anrong-plugins
+```
+
+<details>
+<summary>Force Update</summary>
 
 ```shell
 claude plugin marketplace update anrong-plugins
 claude plugin remove grok-agent@anrong-plugins
 claude plugin install grok-agent@anrong-plugins
 ```
+
+</details>
 
 ## How it works
 
