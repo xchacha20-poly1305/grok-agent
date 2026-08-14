@@ -2,7 +2,8 @@
 
 Claude Code plugin that delegates **codebase exploration**, **implementing an already-written plan**, and **real-time search** (current events, X/Twitter, web) to [Grok Build](https://github.com/xai-org/grok-build) via headless `grok -p`.
 
-This plugin does **not** use MCP. Continuations require a `sessionId` and `grok -p --resume <sessionId>`.
+> [!WARNING]
+> This plugin disabled build-in explore and general use agent.
 
 ## Scope
 
@@ -71,6 +72,12 @@ grok -p '<prompt>' --resume '<sessionId>' --always-approve --output-format json
 ```
 
 There is no separate reply tool. Omitting `--resume` starts a new session.
+
+## Enforcement
+
+A skill is advisory — the model can still reach for a built-in sub-agent out of habit. This plugin ships a `PreToolUse` hook that **denies** `Task`/`Agent` calls with `subagent_type` of `Explore` or `general-purpose`, and tells the agent to use `grok-use` instead.
+
+To opt out, set `GROK_AGENT_ALLOW_SUBAGENTS=1` in your environment (or in `settings.json` under `env`).
 
 ## Project rules
 

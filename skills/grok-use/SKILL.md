@@ -1,22 +1,30 @@
 ---
 name: grok-use
 description: |-
-    Delegate to Grok instead of doing the work yourself or using other agents.
-    Grok is cheaper and faster — proactively delegate when the task fits.
+    MANDATORY for the tasks below — invoke this skill; do NOT do the work yourself
+    and do NOT use any built-in agent (Explore, general-purpose, Task/Agent) for them.
+    A PreToolUse hook denies those subagents, so reaching for one wastes a turn.
 
-    In scope:
-    - Explore / map code: locate files, trace call paths, summarize modules
-    - Implement an existing plan: execute a design doc, PR plan, or checklist
+    You MUST invoke this skill when the task is:
+    - Explore / map code: locating files, tracing call paths, summarizing modules,
+      "where is X", "how does Y work", or any fan-out search across the tree
+    - Implementing an existing plan: executing a design doc, PR plan, or checklist
     - Real-time search: current events, X/Twitter discourse, trending topics
 
-    Out of scope (do these yourself):
+    This applies even when the task looks small enough to grep yourself, and even
+    mid-task — if you catch yourself about to search the tree, stop and invoke it.
+
+    Do NOT invoke it for (handle these yourself):
     - Open-ended design, product decisions, or writing the plan itself
     - Ambiguous tasks with no plan and no clear exploration question
     - Pure conversation or broad "fix everything" without a concrete plan
+    - Reading one specific file you already know the path of
 user-invocable: true
 ---
 
-Load this skill when you want Grok to do codebase exploration, execute an existing plan, or run a real-time search (current events, X/Twitter, anything your own search can't cover). **You call `grok` directly via Bash — there is no intermediate agent.**
+Codebase exploration, executing an existing plan, and real-time search (current events, X/Twitter, anything your own search can't cover) **go to Grok, not to you and not to a built-in agent**. `Explore` and `general-purpose` are blocked by a PreToolUse hook precisely because this skill supersedes them. **You call `grok` directly via Bash — there is no intermediate agent.**
+
+Grep/Glob for a single known symbol in a file you already have open is fine. Anything that would fan out across the tree is Grok's job.
 
 Do **not** delegate open-ended design, product choices, or "figure out what to build" to Grok. Write or refine the plan yourself first, then hand Grok the plan (or path to it) plus any constraints.
 
