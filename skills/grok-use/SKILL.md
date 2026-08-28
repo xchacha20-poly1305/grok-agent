@@ -38,8 +38,16 @@ Always use:
 |------|--------|
 | `--always-approve` | Unattended tool approval |
 | `--output-format json` | Machine-readable result with `text` + `sessionId` |
+| `--effort <level>` | Controls how hard Grok works; default `medium`, use `high` for large or loosely-constrained tasks |
 
 Do **not** pass `--sandbox` (full access). Do **not** add model/tools/rules/other flags unless the user explicitly requested them.
+
+### Choosing `--effort`
+
+| Level | When to use |
+|-------|-------------|
+| `medium` | Default. Focused tasks with a clear scope: locating a symbol, implementing a well-defined plan step, answering a concrete question. |
+| `high` | Large or open-ended work: broad codebase exploration, implementing a full feature with few constraints, refactoring across many files. |
 
 ## Optional flags
 
@@ -65,7 +73,7 @@ Use a large Bash timeout (at least **3600000** ms) for real tasks. For tasks tha
 OUT="$(mktemp "${TMPDIR:-/tmp}/grok-out.XXXXXX")"
 TEXT="$(mktemp "${TMPDIR:-/tmp}/grok-text.XXXXXX")"
 
-grok -p '...' --always-approve --output-format json >"$OUT"
+grok -p '...' --always-approve --effort medium --output-format json >"$OUT"
 status=$?
 
 # errors: {"type":"error","message":"..."} (exit non-zero)
@@ -104,13 +112,13 @@ Success shape (fields may include more; do not depend on loading them all):
 ## New session
 
 ```bash
-grok -p '<prompt>' --always-approve --output-format json >"$OUT"
+grok -p '<prompt>' --always-approve --effort medium --output-format json >"$OUT"
 ```
 
 For multi-line prompts or special characters, write the prompt **verbatim** to a file and use:
 
 ```bash
-grok --prompt-file /path/to/prompt.txt --always-approve --output-format json >"$OUT"
+grok --prompt-file /path/to/prompt.txt --always-approve --effort medium --output-format json >"$OUT"
 ```
 
 Then extract with `jq` as above. Keep `sessionId` for every follow-up.
@@ -120,13 +128,13 @@ Then extract with `jq` as above. Keep `sessionId` for every follow-up.
 There is **no** separate reply API. To continue, pass the previous `sessionId`:
 
 ```bash
-grok -p '<continued prompt>' --resume '<sessionId>' --always-approve --output-format json >"$OUT"
+grok -p '<continued prompt>' --resume '<sessionId>' --always-approve --effort medium --output-format json >"$OUT"
 ```
 
 Or with a prompt file:
 
 ```bash
-grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve --output-format json >"$OUT"
+grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve --effort medium --output-format json >"$OUT"
 ```
 
 * Omitting `--resume` starts a **new** session and drops prior context.
