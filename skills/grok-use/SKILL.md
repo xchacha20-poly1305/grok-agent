@@ -44,10 +44,12 @@ Do **not** pass `--sandbox` (full access). Do **not** add model/tools/rules/othe
 
 ### Choosing `--effort`
 
+The criterion is **whether the shape of the answer is known**, not the size of the codebase touched.
+
 | Level | When to use |
 |-------|-------------|
-| `medium` | Default. Focused tasks with a clear scope: locating a symbol, implementing a well-defined plan step, answering a concrete question. |
-| `high` | Large or open-ended work: broad codebase exploration, implementing a full feature with few constraints, refactoring across many files. |
+| `medium` | **Default — use this for almost all exploration tasks.** The question has a concrete, answerable shape: locating a symbol, tracing a call path, "where is X defined", "how does Y work", implementing a well-defined plan step. The answer may touch many files; that alone does not justify `high`. |
+| `high` | The scope of the answer is itself unknown: implementing a full feature with few constraints, refactoring across many files with no clear target, or an exploration question so vague that the territory must be mapped before the question can even be answered (e.g. "give me a full overview of the auth system" with no specific angle). If you can write a one-sentence answer target, it is `medium`. |
 
 ## Optional flags
 
