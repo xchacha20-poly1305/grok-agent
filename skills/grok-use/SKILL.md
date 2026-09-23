@@ -38,18 +38,38 @@ Always use:
 |------|--------|
 | `--always-approve` | Unattended tool approval |
 | `--output-format json` | Machine-readable result with `text` + `sessionId` |
-| `--effort <level>` | Controls how hard Grok works; default `medium`, use `high` for large or loosely-constrained tasks |
+| `--model <id>` | Chosen by task type; see [Choosing `--model`](#choosing---model) |
+| `--effort <level>` | Chosen by task type and scope; see [Choosing `--effort`](#choosing---effort) |
 
-Do **not** pass `--sandbox` (full access). Do **not** add model/tools/rules/other flags unless the user explicitly requested them.
+Do **not** pass `--sandbox` (full access). Do **not** add tools/rules/other flags unless the user explicitly requested them.
+
+### Choosing `--model`
+
+If the user names a model, use it. Otherwise:
+
+| Task | Model |
+|------|-------|
+| Codebase exploration | `grok-4.7-build-fast` |
+| Everything else (implementation, real-time search) | `grok-4.7` |
 
 ### Choosing `--effort`
 
-The criterion is **whether the shape of the answer is known**, not the size of the codebase touched.
+Valid levels: `low`, `medium`, `high`, `xhigh`.
+
+**Exploration** (and real-time search):
 
 | Level | When to use |
 |-------|-------------|
-| `medium` | **Default — use this for almost all exploration tasks.** The question has a concrete, answerable shape: locating a symbol, tracing a call path, "where is X defined", "how does Y work", implementing a well-defined plan step. The answer may touch many files; that alone does not justify `high`. |
-| `high` | The scope of the answer is itself unknown: implementing a full feature with few constraints, refactoring across many files with no clear target, or an exploration question so vague that the territory must be mapped before the question can even be answered (e.g. "give me a full overview of the auth system" with no specific angle). If you can write a one-sentence answer target, it is `medium`. |
+| `low` | **Default.** The question is concrete: locating a symbol, tracing a call path, "where is X defined", "how does Y work". |
+| `medium` | There is a lot to cover, or the question is not clearly specified and Grok has to work out what to look for. |
+
+**Implementation:**
+
+| Level | When to use |
+|-------|-------------|
+| `high` | **Default.** |
+| `medium` | The change is small: a few lines or a single well-specified edit. |
+| `xhigh` | The user asks for exhaustive, detail-by-detail work. |
 
 ## Optional flags
 
@@ -75,7 +95,7 @@ Use a large Bash timeout (at least **3600000** ms) for real tasks. For tasks tha
 OUT="$(mktemp "${TMPDIR:-/tmp}/grok-out.XXXXXX")"
 TEXT="$(mktemp "${TMPDIR:-/tmp}/grok-text.XXXXXX")"
 
-grok -p '...' --always-approve --effort medium --output-format json >"$OUT"
+grok -p '...' --model grok-4.7-build-fast --always-approve --effort low --output-format json >"$OUT"
 status=$?
 
 # errors: {"type":"error","message":"..."} (exit non-zero)
@@ -114,13 +134,13 @@ Success shape (fields may include more; do not depend on loading them all):
 ## New session
 
 ```bash
-grok -p '<prompt>' --always-approve --effort medium --output-format json >"$OUT"
+grok -p '<prompt>' --model grok-4.7 --always-approve --effort high --output-format json >"$OUT"
 ```
 
 For multi-line prompts or special characters, write the prompt **verbatim** to a file and use:
 
 ```bash
-grok --prompt-file /path/to/prompt.txt --always-approve --effort medium --output-format json >"$OUT"
+grok --prompt-file /path/to/prompt.txt --model grok-4.7 --always-approve --effort high --output-format json >"$OUT"
 ```
 
 Then extract with `jq` as above. Keep `sessionId` for every follow-up.
@@ -130,13 +150,13 @@ Then extract with `jq` as above. Keep `sessionId` for every follow-up.
 There is **no** separate reply API. To continue, pass the previous `sessionId`:
 
 ```bash
-grok -p '<continued prompt>' --resume '<sessionId>' --always-approve --effort medium --output-format json >"$OUT"
+grok -p '<continued prompt>' --resume '<sessionId>' --model grok-4.7 --always-approve --effort high --output-format json >"$OUT"
 ```
 
 Or with a prompt file:
 
 ```bash
-grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --always-approve --effort medium --output-format json >"$OUT"
+grok --prompt-file /path/to/prompt.txt --resume '<sessionId>' --model grok-4.7 --always-approve --effort high --output-format json >"$OUT"
 ```
 
 * Omitting `--resume` starts a **new** session and drops prior context.
