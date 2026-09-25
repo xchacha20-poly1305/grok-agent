@@ -3,7 +3,7 @@
 Claude Code plugin that delegates **codebase exploration**, **implementing an already-written plan**, and **real-time search** (current events, X/Twitter, web) to [Grok Build](https://github.com/xai-org/grok-build) via headless `grok -p`.
 
 > [!WARNING]
-> This plugin disabled build-in explore and general use agent.
+> This plugin disables the built-in `Explore` and `general-purpose` agents (see [Enforcement](#enforcement)).
 
 ## Scope
 

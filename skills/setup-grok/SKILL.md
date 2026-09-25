@@ -69,10 +69,10 @@ If this fails (auth, network, binary error), stop and notify the user. Common fi
 
 ## 4. Done
 
-Tell the user the plugin is ready. Delegate only:
+Tell the user the plugin is ready. The `grok-use` skill calls `grok -p` directly via Bash (long tasks run with `run_in_background`) and delegates only:
 
-- **explore code** or **implement an existing plan**
-- background: agent `grok`
-- foreground: skill `grok-use` + `grok -p`
+- **exploring code**
+- **implementing an existing plan**
+- **real-time search** (current events, X/Twitter, web)
 
 Do not use Grok for open-ended design; plan first, then hand off implementation.
