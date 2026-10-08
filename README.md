@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This repository is deprecated. Because Grok-4.7 is extremely slow and it can not write useful code.
+
 # grok-agent
 
 Claude Code plugin that delegates **codebase exploration**, **implementing an already-written plan**, and **real-time search** (current events, X/Twitter, web) to [Grok Build](https://github.com/xai-org/grok-build) via headless `grok -p`.
